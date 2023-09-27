@@ -23,7 +23,7 @@
           </t-form-item>
 
           <t-form-item>
-            <t-button theme="primary" type="submit" block>登入</t-button>
+            <t-button theme="primary" type="submit" block @click="login">登入</t-button>
           </t-form-item>
         </t-form>
       </div>
@@ -35,7 +35,24 @@
 import { ref } from 'vue'
 
 const account = ref({
-  email: '',
-  password: '',
+  email: 'hsujinho@gmail.com',
+  password: '1234567890',
 })
+
+const local = 'http://localhost:8000'
+const url = local + '/login'
+const router = useRouter()
+
+const login = async () => {
+  const { data, status } = await useFetch(url, {
+    method: 'POST',
+    body: JSON.stringify(account.value),
+  })
+
+  console.log(data)
+
+  if (status.value === 'success') {
+    router.push('/dashboard')
+  }
+}
 </script>
