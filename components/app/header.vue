@@ -26,10 +26,11 @@ import { ref } from 'vue'
 const isLogin = ref(false)
 const featList = [
   { feat: '登入畫面', link: '/', value: 1000 },
-  { feat: '排名分佈', link: 'rank', value: 1 },
-  { feat: '趨勢分析', link: 'trend', value: 2 },
-  { feat: '大專院校排名', link: 'schoolRank', value: 3 },
-  { feat: '地區組成', link: 'areaComposition', value: 4 },
-  { feat: '考試檢定', link: 'test', value: 5 },
+  { feat: '首頁', link: '/dashboard', value: 1 },
+  // { feat: '排名分佈', link: '/rank', value: 2 },
+  // { feat: '趨勢分析', link: '/trend', value: 3 },
+  // { feat: '大專院校排名', link: '/schoolRank', value: 4 },
+  // { feat: '地區組成', link: '/areaComposition', value: 5 },
+  // { feat: '考試檢定', link: '/test', value: 6 },
 ]
 </script>
