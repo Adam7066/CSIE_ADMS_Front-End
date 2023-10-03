@@ -1,6 +1,13 @@
 <template>
-  <div>
+  <t-layout>
     <AppHeader />
-    <slot />
-  </div>
+    <t-layout>
+      <AppAside />
+      <t-layout>
+        <t-content>
+          <slot />
+        </t-content>
+      </t-layout>
+    </t-layout>
+  </t-layout>
 </template>
