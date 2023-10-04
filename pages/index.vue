@@ -46,6 +46,7 @@ const loginForm = ref({
 interface AuthData {
   token: string
   username: string
+  role: string
 }
 
 interface LoginResData {
@@ -69,6 +70,7 @@ const login = async () => {
     const resData = data.value.data
     authStore.setToken(resData.token)
     authStore.setUsername(resData.username)
+    authStore.setRole(resData.role)
     if (authStore.isLoggedIn) loginAfter()
   }
 }
