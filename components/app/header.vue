@@ -1,6 +1,17 @@
 <template>
   <t-header>
     <t-head-menu theme="light" class="drop-shadow">
+      <!-- <t-menu-item v-for="item in adminList" :key="item.value">
+          <nuxt-link :to="item.link">
+            {{ item.feat }}
+          </nuxt-link>
+        </t-menu-item> -->
+      <t-menu-item v-if="role === 'admin'">
+        <nuxt-link to="/admin/users"> 系統成員管理 </nuxt-link>
+      </t-menu-item>
+      <t-menu-item v-if="role === 'admin'">
+        <nuxt-link to="/admin/data"> 上傳/管理資料 </nuxt-link>
+      </t-menu-item>
       <t-menu-item v-for="item in featList" :key="item.value">
         <nuxt-link :to="item.link">
           {{ item.feat }}
@@ -22,6 +33,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const role = authStore.role
+
+// const adminList = [
+//   { feat: '系統成員管理', value: 51, link: '/admin/users' },
+//   { feat: '上傳/管理資料', value: 52, link: '/admin/data' },
+// ]
 
 const isLogin = ref(false)
 const featList = [
