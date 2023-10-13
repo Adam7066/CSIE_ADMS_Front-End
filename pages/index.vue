@@ -1,5 +1,5 @@
 <template>
-  <div class="w-auto rounded-3xl px-8 py-12">
+  <div class="rounded-3xl px-8 py-12">
     <div class="flex flex-col items-center justify-center">
       <div class="m-2 p-2 text-3xl">招生委員會獨門秘笈 (^_^)</div>
       <div class="w-1/2 rounded-md border-2 border-gray-300 bg-blue-50 p-4">

@@ -1,51 +1,65 @@
 <template>
   <t-header>
     <t-head-menu theme="light" class="drop-shadow">
-      <!-- <t-menu-item v-for="item in adminList" :key="item.value">
-          <nuxt-link :to="item.link">
-            {{ item.feat }}
-          </nuxt-link>
-        </t-menu-item> -->
-      <t-menu-item v-if="role === 'admin'">
-        <nuxt-link to="/admin/users"> 系統成員管理 </nuxt-link>
-      </t-menu-item>
-      <t-menu-item v-if="role === 'admin'">
-        <nuxt-link to="/admin/data"> 上傳/管理資料 </nuxt-link>
-      </t-menu-item>
-      <t-menu-item v-for="item in featList" :key="item.value">
-        <nuxt-link :to="item.link">
-          {{ item.feat }}
-        </nuxt-link>
-      </t-menu-item>
+      <t-menu-item value="home" class="text-lg font-semibold" to="/">首頁</t-menu-item>
+
+      <div v-if="authStore.isLoggedIn" class="flex">
+        <t-menu-item value="analyze" class="text-lg font-semibold" to="/analyze">
+          數據分析
+        </t-menu-item>
+
+        <div v-if="authStore.isAdmin" class="flex">
+          <t-menu-item value="adminUsers" class="text-lg font-semibold" to="/admin/users">
+            成員管理
+          </t-menu-item>
+          <t-menu-item value="adminData" class="text-lg font-semibold" to="/admin/data">
+            資料管理
+          </t-menu-item>
+        </div>
+      </div>
+
       <template #operations>
-        <t-dropdown>
-          <t-button variant="text" shape="square">
-            <template #icon><t-icon name="user" /></template>
-          </t-button>
-          <t-dropdown-menu>
-            <t-dropdown-item v-if="isLogin"> 登出 </t-dropdown-item>
-          </t-dropdown-menu>
-        </t-dropdown>
+        <div v-if="authStore.isLoggedIn" class="flex">
+          <t-menu-item value="logout" class="text-lg font-semibold" @click="logout">
+            登出
+          </t-menu-item>
+        </div>
       </template>
     </t-head-menu>
   </t-header>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
+const config = useRuntimeConfig()
 const authStore = useAuthStore()
-const role = authStore.role
+const router = useRouter()
 
-// const adminList = [
-//   { feat: '系統成員管理', value: 51, link: '/admin/users' },
-//   { feat: '上傳/管理資料', value: 52, link: '/admin/data' },
-// ]
+interface LogoutResData {
+  code: number
+  msg: string
+  data: string
+}
 
-const isLogin = ref(false)
-const featList = [
-  { feat: '登入畫面', link: '/', value: 1000 },
-  { feat: '首頁', link: '/dashboard', value: 1 },
-]
+const logout = async () => {
+  const { data } = await useFetch<LogoutResData>(config.public.apiBase + '/logout', {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + authStore.getToken,
+    },
+  })
+  if (data.value) {
+    if (data.value.msg !== 'success') {
+      alert(data.value.msg) // TODO: change to warning toast
+      return
+    }
+    logoutAfter()
+  }
+}
+
+const logoutAfter = () => {
+  authStore.logout()
+  router.replace('/')
+}
 </script>

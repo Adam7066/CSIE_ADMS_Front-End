@@ -1,13 +1,8 @@
 <template>
-  <t-layout>
+  <t-layout class="min-h-screen">
     <AppHeader />
-    <t-layout>
-      <AppAside />
-      <t-layout>
-        <t-content>
-          <slot />
-        </t-content>
-      </t-layout>
-    </t-layout>
+    <t-content class="h-full bg-gray-100">
+      <slot />
+    </t-content>
   </t-layout>
 </template>

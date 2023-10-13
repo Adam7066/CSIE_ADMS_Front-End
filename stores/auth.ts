@@ -16,9 +16,15 @@ export const useAuthStore = defineStore('auth', {
     setRole(role: string) {
       this.role = role
     },
+    logout() {
+      this.token = ''
+      this.username = ''
+      this.role = ''
+    },
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
+    isAdmin: (state) => state.role === 'admin',
     getToken: (state) => state.token,
     getUsername: (state) => state.username,
     getRole: (state) => state.role,
