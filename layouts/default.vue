@@ -1,6 +1,8 @@
 <template>
-  <div>
+  <t-layout class="min-h-screen">
     <AppHeader />
-    <slot />
-  </div>
+    <t-content class="h-full bg-gray-100">
+      <slot />
+    </t-content>
+  </t-layout>
 </template>
