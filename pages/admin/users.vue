@@ -13,6 +13,9 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
+const config = useRuntimeConfig()
+const authStore = useAuthStore()
+
 const col = ref([
   { title: '名稱', colKey: 'username' },
   { title: '電子郵件', colKey: 'email' },
@@ -35,23 +38,12 @@ interface userResData {
   data: user[]
 }
 
-const config = useRuntimeConfig()
-const authStore = useAuthStore()
-const token = authStore.token
-
-const users = ref<user[]>([])
-
-const { data } = useFetch<userResData>(config.public.apiBase + '/get_users', {
+const { data } = await useFetch<userResData>(config.public.apiBase + '/get_users', {
   method: 'GET',
   headers: {
-    Authorization: 'Bearer ' + token,
+    Authorization: 'Bearer ' + authStore.token,
   },
 })
 
-if (data.value) {
-  if (data.value.msg !== 'success') {
-    alert('取得資料失敗')
-  }
-  users.value = data.value.data
-}
+const users = computed(() => data.value?.data ?? [])
 </script>
