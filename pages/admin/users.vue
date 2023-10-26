@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen w-auto px-8 py-12">
+  <div class="w-auto px-8 py-12">
     <div class="flex flex-col items-center justify-center">
       <div class="m-2 self-start p-2 text-3xl">帳號列表</div>
       <div class="min-h-[512px] w-auto rounded-md border-2 border-gray-300 bg-white p-4">
