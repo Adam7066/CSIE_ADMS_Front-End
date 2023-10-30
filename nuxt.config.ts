@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
   build: {
-    transpile: ['tdesign-vue-next'],
+    transpile: ['tdesign-vue-next', 'echarts'],
   },
   pinia: {
     autoImports: ['defineStore'],

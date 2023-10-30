@@ -6,7 +6,7 @@
         :key="item.value"
         :value="item.value"
         class="text-lg font-semibold"
-        @click.prevent="curComponent = item.comp"
+        @click="curComponent = item.comp"
       >
         {{ item.feat }}
       </t-menu-item>
@@ -29,7 +29,6 @@ definePageMeta({
 })
 
 const menuVal = ref()
-
 const curComponent = shallowRef(AnalyzeDefault)
 const anaList = [
   { feat: '圖表範例', value: 1, comp: AnalyzeExample },
