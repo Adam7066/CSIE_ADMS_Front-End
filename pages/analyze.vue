@@ -23,6 +23,8 @@
 <script setup lang="ts">
 import AnalyzeDefault from '@/components/analyze/default.vue'
 import AnalyzeExample from '@/components/analyze/example.vue'
+import AnalyzeStudentData from '@/components/analyze/studentData.vue'
+import AnalyzeGroup from '@/components/analyze/group.vue'
 
 definePageMeta({
   layout: 'aside',
@@ -32,6 +34,8 @@ const menuVal = ref()
 const curComponent = shallowRef(AnalyzeDefault)
 const anaList = [
   { feat: '圖表範例', value: 1, comp: AnalyzeExample },
+  { feat: '學生資料', value: 2, comp: AnalyzeStudentData },
+  { feat: '入學組別', value: 3, comp: AnalyzeGroup },
   // { feat: '排名分佈', value: 2 },
   // { feat: '趨勢分析', value: 3 },
   // { feat: '大專院校排名', value: 4 },
