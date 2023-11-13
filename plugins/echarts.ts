@@ -1,7 +1,7 @@
 import { use, registerMap } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
-import { MapChart, LineChart } from 'echarts/charts'
+import { MapChart, LineChart, BarChart, BoxplotChart } from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
@@ -9,6 +9,8 @@ import {
   VisualMapComponent,
   ToolboxComponent,
   GridComponent,
+  DatasetComponent,
+  TransformComponent,
 } from 'echarts/components'
 import type { GeoJSON } from 'echarts/types/src/coord/geo/geoTypes'
 import taiwanJson from '@/assets/geo/taiwan.json'
@@ -26,6 +28,10 @@ export default defineNuxtPlugin(() => {
     LegendComponent,
     VisualMapComponent,
     ToolboxComponent,
+    BarChart,
+    DatasetComponent,
+    TransformComponent,
+    BoxplotChart,
   ])
 
   registerMap('taiwan', taiwanJson as GeoJSON)
