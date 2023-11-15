@@ -39,7 +39,12 @@
                 <div class="my-2 w-full rounded border-2 border-gray-300 bg-red-100">
                   <div class="my-2 text-center">計算方式</div>
                   <div v-for="item in counting" :key="item.feat" class="m-2">
-                    <t-button variant="outline" class="w-full" @click="changeCountingWay(item)">
+                    <t-button
+                      :variant="item.variant"
+                      :disabled="item.disabled"
+                      class="w-full"
+                      @click="changeCountingWay(item)"
+                    >
                       {{ item.feat }}
                     </t-button>
                   </div>
@@ -90,9 +95,9 @@ const plot = ref([
 ])
 
 const counting = ref([
-  { feat: '平均', value: 'mean' },
-  { feat: '中位數', value: 'median' },
-  { feat: '眾數', value: 'mode' },
+  { feat: '平均', value: 'mean', variant: 'outline', disabled: false },
+  { feat: '中位數', value: 'median', variant: 'outline', disabled: false },
+  { feat: '眾數', value: 'mode', variant: 'outline', disabled: false },
 ])
 
 // const currentPlot = ref('')
@@ -133,6 +138,18 @@ const initOptions = ref({
 
 const option = ref()
 
+const featureControl = () => {
+  if (currentState.plot === 'boxplot') {
+    counting.value.forEach((item) => {
+      item.disabled = true
+    })
+  } else {
+    counting.value.forEach((item) => {
+      item.disabled = false
+    })
+  }
+}
+
 const updateChartOption = () => {
   if (currentState.SiJiNum === 0 || currentState.plot === '') {
     // error message
@@ -148,6 +165,8 @@ const updateChartOption = () => {
 
     const insOption = {
       xAxis: {
+        name: '學期',
+        nameLocation: 'end',
         type: 'category',
         data: semester,
         axisLine: {
@@ -169,6 +188,105 @@ const updateChartOption = () => {
       toolbox: defaultToolbox,
     }
     option.value = insOption
+  } else if (currentState.SiJiNum === 1 && currentState.plot === 'bar') {
+    const gruop = ['個人申請', '統一分發', '繁星', '特殊選才']
+    const insOption = {
+      xAxis: {
+        name: '入學方式',
+        nameLocation: 'end',
+        type: 'category',
+        data: gruop,
+        axisLine: {
+          onZero: false,
+        },
+      },
+      yAxis: {
+        name: '人數',
+        nameLocation: 'end',
+        type: 'value',
+      },
+      series: [
+        {
+          data: [40, 30, 33, 45],
+          type: currentState.plot,
+        },
+      ],
+      toolbox: defaultToolbox,
+    }
+    option.value = insOption
+  } else if (currentState.SiJiNum === 1 && currentState.plot === 'boxplot') {
+    const gruop = ['個人申請', '統一分發', '繁星', '特殊選才']
+    const insOption = {
+      title: [
+        {
+          text: '各入學方式盒狀圖',
+          left: 'center',
+        },
+      ],
+      dataset: [
+        {
+          // prettier-ignore
+          source: [
+                [850, 740, 900, 1070, 930, 850, 950, 980, 980, 880, 1000, 980, 930, 650, 760, 810, 1000, 1000, 960, 960],
+                [960, 940, 960, 940, 880, 800, 850, 880, 900, 840, 830, 790, 810, 880, 880, 830, 800, 790, 760, 800],
+                [880, 880, 880, 860, 720, 720, 620, 860, 970, 950, 880, 910, 850, 870, 840, 840, 850, 840, 840, 840],
+                [890, 810, 810, 820, 800, 770, 760, 740, 750, 760, 910, 920, 890, 860, 880, 720, 840, 850, 850, 780]
+            ],
+        },
+        {
+          transform: {
+            type: 'boxplot',
+            config: gruop,
+          },
+        },
+        {
+          fromDatasetIndex: 1,
+          fromTransformResult: 1,
+        },
+      ],
+      tooltip: {
+        trigger: 'item',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+      grid: {
+        left: '10%',
+        right: '10%',
+        bottom: '15%',
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: true,
+        nameGap: 30,
+        splitArea: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+      yAxis: {
+        type: 'value',
+        name: 'km/s minus 299,000',
+        splitArea: {
+          show: true,
+        },
+      },
+      series: [
+        {
+          name: 'boxplot',
+          type: 'boxplot',
+          datasetIndex: 1,
+        },
+        {
+          name: 'outlier',
+          type: 'scatter',
+          datasetIndex: 2,
+        },
+      ],
+    }
+    option.value = insOption
   }
 }
 
@@ -178,6 +296,7 @@ watch(SiJiSelected, () => {
 })
 
 watch(currentState, () => {
+  featureControl()
   updateChartOption()
 })
 
