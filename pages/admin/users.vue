@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { SubmitContext } from 'tdesign-vue-next/lib/form/type'
+import { type SubmitContext } from 'tdesign-vue-next/lib/form/type'
 import { useAuthStore } from '@/stores/auth'
 
 const config = useRuntimeConfig()
@@ -75,7 +75,7 @@ interface userResData {
   data: user[]
 }
 
-const { data } = await useFetch<userResData>(config.public.apiBase + '/get_users', {
+const { data } = await useFetch<userResData>(config.public.apiBase + '/users', {
   method: 'GET',
   headers: {
     Authorization: 'Bearer ' + authStore.token,
@@ -111,7 +111,7 @@ const createUser = async ({ validateResult, firstError }: SubmitContext) => {
   }
 
   createUserLoading.value = true
-  const { data } = await useFetch<createUserResData>(config.public.apiBase + '/create_user', {
+  const { data } = await useFetch<createUserResData>(config.public.apiBase + '/user', {
     method: 'POST',
     headers: {
       Authorization: 'Bearer ' + authStore.token,
