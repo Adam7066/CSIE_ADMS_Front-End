@@ -46,9 +46,11 @@
               <t-table
                 :columns="colSmall"
                 :data="stuData"
+                :sort="sort"
                 row-key="id"
                 :selected-row-keys="selectedRowKeys"
                 :active-row-type="activeRow ? 'single' : undefined"
+                @sort-change="sortChange"
                 @select-change="rehandleSelectChange"
               >
               </t-table>
@@ -67,6 +69,33 @@
 <script setup lang="ts">
 import { ChevronDownIcon } from 'tdesign-icons-vue-next'
 import { useAuthStore } from '@/stores/auth'
+
+const sort = ref({
+  sortBy: '',
+  descending: true,
+})
+
+const sortChange = (value: { sortBy: string; descending: boolean }) => {
+  sort.value = value
+
+  const sortKey = sort.value.sortBy
+  if (
+    sortKey === 'chinese' ||
+    sortKey === 'math' ||
+    sortKey === 'english' ||
+    sortKey === 'nature' ||
+    sortKey === 'society' ||
+    sortKey === 'sum_score'
+  ) {
+    stuData.value.sort((a, b) => {
+      if (sort.value.descending) {
+        return a[sortKey] - b[sortKey]
+      } else {
+        return b[sortKey] - a[sortKey]
+      }
+    })
+  }
+}
 
 const magnification = ref({
   chi: 1.0,
@@ -101,16 +130,16 @@ const colSmall = ref([
   { title: '入學年度', colKey: 'admission_year' },
   { title: '學號', colKey: 'student_code' },
   { title: '姓名', colKey: 'name' },
-  { title: '畢業學校', colKey: 'graduated_school' },
-  { title: '入學組別', colKey: 'admission_group' },
-  { title: '身份', colKey: 'identity_category' },
-  { title: '國文', colKey: 'chinese' },
-  { title: '英文', colKey: 'english' },
-  { title: '數學', colKey: 'math' },
-  { title: '自然', colKey: 'nature' },
-  { title: '社會', colKey: 'society' },
-  { title: '英聽', colKey: 'listening' },
-  { title: '總級分', colKey: 'sum_score' },
+  { title: '畢業學校', colKey: 'graduated_school', sortType: 'all', sorter: false },
+  { title: '入學組別', colKey: 'admission_group', sortType: 'all', sorter: false },
+  { title: '身份', colKey: 'identity_category', sortType: 'all', sorter: false },
+  { title: '國文', colKey: 'chinese', sortType: 'all', sorter: true },
+  { title: '英文', colKey: 'english', sortType: 'all', sorter: true },
+  { title: '數學', colKey: 'math', sortType: 'all', sorter: true },
+  { title: '自然', colKey: 'nature', sortType: 'all', sorter: true },
+  { title: '社會', colKey: 'society', sortType: 'all', sorter: true },
+  { title: '英聽', colKey: 'listening', sortType: 'all', sorter: false },
+  { title: '總級分', colKey: 'sum_score', sortType: 'all', sorter: true },
 ])
 
 const SiJi = ref<{ content: string; value: number }[]>([])

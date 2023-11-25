@@ -74,18 +74,18 @@ const stuData = ref<studentData[]>([
   {
     id: 2,
     admission_year: '113',
-    student_code: '40947043S',
-    name: '徐政皓',
-    admission_method: '分發入學',
-    graduated_school: '國立新竹高中',
+    student_code: '40947026S',
+    name: '余原齊',
+    admission_method: '特殊申請',
+    graduated_school: '某所私立高中',
   },
   {
     id: 3,
     admission_year: '113',
-    student_code: '40947043S',
-    name: '徐政皓',
-    admission_method: '分發入學',
-    graduated_school: '國立新竹高中',
+    student_code: '40947030S',
+    name: '陳柏翰',
+    admission_method: '個人申請',
+    graduated_school: '國立建國高中',
   },
 ])
 
@@ -135,6 +135,14 @@ const initOptions = ref({
 
 const option = ref()
 
+// const fetchStuRank = async () => {
+//   const { data } = await useFetch<stuRankResData>(config.public.apiBase + '/stuRank', {
+//     method: 'POST',
+//     body: JSON.stringify(stuSelected.value),
+//   })
+//   stuRank.value = data.data
+// }
+
 const updateChartOption = () => {
   if (stuSelected.value.length === 0) {
     // error message
@@ -148,6 +156,9 @@ const updateChartOption = () => {
   }
 
   const insOption = {
+    title: {
+      text: '學生入學後學期排名追蹤',
+    },
     xAxis: {
       name: '學期',
       nameLocation: 'end',

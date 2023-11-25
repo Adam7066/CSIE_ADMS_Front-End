@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { UploadFile, UploadFailContext, MessagePlugin } from 'tdesign-vue-next'
+import { type UploadFile, type UploadFailContext, MessagePlugin } from 'tdesign-vue-next'
 import { useAuthStore } from '@/stores/auth'
 
 const config = useRuntimeConfig()
