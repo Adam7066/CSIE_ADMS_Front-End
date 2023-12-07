@@ -10,9 +10,18 @@
           :options="admsMethodOptions"
           label="入學方式"
         />
+        <t-select
+          v-else-if="categoryValue == '2'"
+          v-model="rankMethodValue"
+          :options="rankMethodOptions"
+          label="檔案類別"
+        />
         <t-form>
           <t-form-item label="年份">
-            <t-input-number v-model="yearValue" :min="106" :max="107" />
+            <t-input-number v-model="yearValue" :min="106" :max="112" />
+          </t-form-item>
+          <t-form-item v-if="categoryValue == '2'" label="學期">
+            <t-input-number v-model="semesterValue" :min="1" :max="2" />
           </t-form-item>
         </t-form>
       </div>
@@ -44,7 +53,10 @@ const config = useRuntimeConfig()
 const authStore = useAuthStore()
 
 const categoryValue = ref('')
-const categoryOptions = [{ label: '入學資料', value: '1' }]
+const categoryOptions = [
+  { label: '入學資料', value: '1' },
+  { label: '成績排名', value: '2' },
+]
 
 const admsMethodValue = ref('')
 const admsMethodOptions = [
@@ -53,7 +65,14 @@ const admsMethodOptions = [
   { label: '申請入學_APCS組', value: '3' },
 ]
 
+const rankMethodValue = ref('')
+const rankMethodOptions = [
+  { label: '當學期', value: '1' },
+  { label: '歷年', value: '2' },
+]
+
 const yearValue = ref(107)
+const semesterValue = ref(1)
 const files = ref([])
 const apiURL = ref('')
 
@@ -70,42 +89,53 @@ const requestMethod = async (file: UploadFile) => {
     if (admsMethodValue.value === '1') apiURL.value = '/upload_star_plan'
     else if (admsMethodValue.value === '2') apiURL.value = '/upload_apply_general'
     else if (admsMethodValue.value === '3') apiURL.value = '/upload_apply_apcs'
-
-    if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      return new Promise((resolve) => {
-        resolve({ status: 'fail', error: '檔案格式錯誤' })
-      })
-    }
     if (apiURL.value === '') {
       return new Promise((resolve) => {
         resolve({ status: 'fail', error: '請選擇資料類型、入學方式' })
       })
     }
-
-    const formData = new FormData()
-    formData.append('year', yearValue.value.toString())
-    if (file.raw) {
-      const fileBlob = new Blob([file.raw], { type: file.type })
-      formData.append('file', fileBlob)
-    }
-    const { data } = await useFetch<uploadFileRes>(config.public.apiBase + apiURL.value, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + authStore.token,
-      },
-      body: formData,
-    })
-
-    if (data.value) {
-      if (data.value.error) {
-        return new Promise((resolve) => {
-          resolve({ status: 'fail', error: '上傳失敗' })
-        })
-      }
+  } else if (categoryValue.value === '2') {
+    if (rankMethodValue.value === '1') apiURL.value = '/rank/upload_semester'
+    else if (rankMethodValue.value === '2') apiURL.value = '/rank/upload_years'
+    if (apiURL.value === '') {
       return new Promise((resolve) => {
-        resolve({ status: 'success', response: { url: '.' } })
+        resolve({ status: 'fail', error: '請選擇資料類型、檔案類別' })
       })
     }
+  }
+
+  if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    return new Promise((resolve) => {
+      resolve({ status: 'fail', error: '檔案格式錯誤' })
+    })
+  }
+
+  const formData = new FormData()
+  formData.append('year', yearValue.value.toString())
+  if (categoryValue.value === '2') {
+    formData.append('semester', semesterValue.value.toString())
+  }
+  if (file.raw) {
+    const fileBlob = new Blob([file.raw], { type: file.type })
+    formData.append('file', fileBlob)
+  }
+  const { data } = await useFetch<uploadFileRes>(config.public.apiBase + apiURL.value, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + authStore.token,
+    },
+    body: formData,
+  })
+
+  if (data.value) {
+    if (data.value.error) {
+      return new Promise((resolve) => {
+        resolve({ status: 'fail', error: '上傳失敗' })
+      })
+    }
+    return new Promise((resolve) => {
+      resolve({ status: 'success', response: { url: '.' } })
+    })
   }
 }
 
