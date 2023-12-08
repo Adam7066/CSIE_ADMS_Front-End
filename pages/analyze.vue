@@ -1,5 +1,5 @@
 <template>
-  <t-aside class="border-t-2">
+  <t-aside class="h-[calc(100vh-56px)] !w-fit overflow-auto border-t-2">
     <t-menu v-model="menuVal">
       <t-menu-item
         v-for="item in anaList"
@@ -13,7 +13,7 @@
     </t-menu>
   </t-aside>
 
-  <t-content>
+  <t-content class="h-[calc(100vh-56px)] overflow-auto">
     <keep-alive>
       <component :is="curComponent" />
     </keep-alive>
