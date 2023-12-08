@@ -1,6 +1,6 @@
 <template>
   <t-aside class="h-[calc(100vh-56px)] !w-fit overflow-auto border-t-2">
-    <t-menu v-model="menuVal">
+    <t-menu v-model="menuVal" :collapsed="collapsed">
       <t-menu-item
         v-for="item in anaList"
         :key="item.value"
@@ -8,8 +8,18 @@
         class="text-lg font-semibold"
         @click="curComponent = item.comp"
       >
+        <template #icon>
+          <t-icon :name="item.icon" />
+        </template>
         {{ item.feat }}
       </t-menu-item>
+      <template #operations>
+        <t-button variant="text" shape="square" @click="changeCollapsed">
+          <template #icon>
+            <t-icon :name="collapsedIconName" />
+          </template>
+        </t-button>
+      </template>
     </t-menu>
   </t-aside>
 
@@ -31,13 +41,19 @@ definePageMeta({
   layout: 'aside',
 })
 
+const collapsed = ref(false)
+const collapsedIconName = computed(() => (collapsed.value ? 'chevron-right' : 'chevron-left'))
+const changeCollapsed = () => {
+  collapsed.value = !collapsed.value
+}
+
 const menuVal = ref()
 const curComponent = shallowRef(AnalyzeDefault)
 const anaList = [
-  { feat: '圖表範例', value: 1, comp: AnalyzeExample },
-  { feat: '學生資料', value: 2, comp: AnalyzeStudentData },
-  { feat: '入學組別', value: 3, comp: AnalyzeGroup },
-  { feat: '個人申請', value: 4, comp: AnalyzeAdmissionStuData },
+  { feat: '圖表範例', value: 1, comp: AnalyzeExample, icon: 'circle' },
+  { feat: '學生資料', value: 2, comp: AnalyzeStudentData, icon: 'circle' },
+  { feat: '入學組別', value: 3, comp: AnalyzeGroup, icon: 'circle' },
+  { feat: '個人申請', value: 4, comp: AnalyzeAdmissionStuData, icon: 'circle' },
   // { feat: '排名分佈', value: 2 },
   // { feat: '趨勢分析', value: 3 },
   // { feat: '大專院校排名', value: 4 },
