@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 import AnalyzeDefault from '@/components/analyze/default.vue'
-import AnalyzeExample from '@/components/analyze/example.vue'
 import AnalyzeStudentData from '@/components/analyze/studentData.vue'
 import AnalyzeGroup from '@/components/analyze/group.vue'
 import AnalyzeAdmissionStuData from '@/components/analyze/admissionStuData.vue'
@@ -41,19 +40,22 @@ definePageMeta({
   layout: 'aside',
 })
 
-const collapsed = ref(false)
+const memoCollapsed = ref(false)
+const collapsed = computed(() => {
+  const { width } = useWindowSize()
+  return width.value < 1024 ? true : memoCollapsed.value
+})
 const collapsedIconName = computed(() => (collapsed.value ? 'chevron-right' : 'chevron-left'))
 const changeCollapsed = () => {
-  collapsed.value = !collapsed.value
+  memoCollapsed.value = !memoCollapsed.value
 }
 
 const menuVal = ref()
 const curComponent = shallowRef(AnalyzeDefault)
 const anaList = [
-  { feat: '圖表範例', value: 1, comp: AnalyzeExample, icon: 'circle' },
-  { feat: '學生資料', value: 2, comp: AnalyzeStudentData, icon: 'circle' },
-  { feat: '入學組別', value: 3, comp: AnalyzeGroup, icon: 'circle' },
-  { feat: '個人申請', value: 4, comp: AnalyzeAdmissionStuData, icon: 'circle' },
+  { feat: '學生資料', value: 1, comp: AnalyzeStudentData, icon: 'circle' },
+  { feat: '入學組別', value: 2, comp: AnalyzeGroup, icon: 'circle' },
+  { feat: '個人申請', value: 3, comp: AnalyzeAdmissionStuData, icon: 'circle' },
   // { feat: '排名分佈', value: 2 },
   // { feat: '趨勢分析', value: 3 },
   // { feat: '大專院校排名', value: 4 },
