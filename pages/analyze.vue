@@ -23,7 +23,7 @@
     </t-menu>
   </t-aside>
 
-  <t-content class="h-[calc(100vh-56px)] overflow-auto">
+  <t-content class="h-[calc(100vh-56px)] w-[calc(100vw-232px)] overflow-auto">
     <keep-alive>
       <component :is="curComponent" />
     </keep-alive>
