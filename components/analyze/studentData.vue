@@ -19,8 +19,12 @@
           />
         </div>
 
-        <div class="h-[400px] w-full rounded-xl border-2 bg-green-50 p-4">
-          <VChart :option="option" :autoresize="true" />
+        <div
+          v-if="seriesDataSemester.length + seriesDataYears.length > 0"
+          class="h-[800px] w-full rounded-xl border-2 bg-green-50 p-4"
+        >
+          <VChart :option="optionSemester" :autoresize="true" class="h-1/2" />
+          <VChart :option="optionYears" :autoresize="true" class="h-1/2" />
         </div>
       </div>
     </div>
@@ -166,26 +170,44 @@ const rehandleSelectChange = (
 ) => {
   selectedRowKeys.value = value
   legendData.value = selectedRowData.map((item) => item.student_code)
-  xAxisData.value = Array.from(
+  xAxisDataSemester.value = Array.from(
     new Set(rankData.value.flatMap((item) => Object.keys(item.semester))),
   ).sort()
-  seriesData.value = []
+  xAxisDataYears.value = Array.from(
+    new Set(rankData.value.flatMap((item) => Object.keys(item.years))),
+  ).sort()
+  seriesDataSemester.value = []
+  seriesDataYears.value = []
   for (let i = 0; i < selectedRowKeys.value.length; i++) {
     const idx = stuData.value.findIndex((item) => item.id === selectedRowKeys.value[i])
-    const tmpData: number[] = []
-    for (let j = 0; j < xAxisData.value.length; j++) {
-      tmpData.push(rankData.value[idx].semester[xAxisData.value[j]])
+    const tmpDataSemester: number[] = []
+    for (let j = 0; j < xAxisDataSemester.value.length; j++) {
+      tmpDataSemester.push(rankData.value[idx].semester[xAxisDataSemester.value[j]])
     }
-    seriesData.value.push({
+    seriesDataSemester.value.push({
       name: legendData.value[i],
       type: 'line',
-      data: tmpData,
+      data: tmpDataSemester,
+    })
+
+    const tmpDataYears: number[] = []
+    for (let j = 0; j < xAxisDataYears.value.length; j++) {
+      tmpDataYears.push(rankData.value[idx].years[xAxisDataYears.value[j]])
+    }
+    seriesDataYears.value.push({
+      name: legendData.value[i],
+      type: 'line',
+      data: tmpDataYears,
     })
   }
 
-  option.value.legend.data = legendData.value
-  option.value.xAxis.data = xAxisData.value
-  option.value.series = seriesData.value
+  optionSemester.value.legend.data = legendData.value
+  optionSemester.value.xAxis.data = xAxisDataSemester.value
+  optionSemester.value.series = seriesDataSemester.value
+
+  optionYears.value.legend.data = legendData.value
+  optionYears.value.xAxis.data = xAxisDataYears.value
+  optionYears.value.series = seriesDataYears.value
 }
 
 interface SeriesData {
@@ -193,13 +215,12 @@ interface SeriesData {
   type: string
   data: number[]
 }
-const seriesData = ref<SeriesData[]>([])
+const seriesDataSemester = ref<SeriesData[]>([])
 const legendData = ref<string[]>([])
-const xAxisData = ref<string[]>([])
-
-const option = ref({
+const xAxisDataSemester = ref<string[]>([])
+const optionSemester = ref({
   title: {
-    text: '各學期成績排名',
+    text: '當學期成績排名',
   },
   tooltip: {
     trigger: 'axis',
@@ -215,13 +236,43 @@ const option = ref({
   },
   xAxis: {
     type: 'category',
-    data: xAxisData.value,
+    data: xAxisDataSemester.value,
   },
   yAxis: {
     type: 'value',
     inverse: true,
     min: 1,
   },
-  series: seriesData.value,
+  series: seriesDataSemester.value,
+})
+
+const seriesDataYears = ref<SeriesData[]>([])
+const xAxisDataYears = ref<string[]>([])
+const optionYears = ref({
+  title: {
+    text: '歷年成績排名',
+  },
+  tooltip: {
+    trigger: 'axis',
+    order: 'valueAsc',
+  },
+  legend: {
+    data: legendData.value,
+  },
+  toolbox: {
+    feature: {
+      saveAsImage: {},
+    },
+  },
+  xAxis: {
+    type: 'category',
+    data: xAxisDataYears.value,
+  },
+  yAxis: {
+    type: 'value',
+    inverse: true,
+    min: 1,
+  },
+  series: seriesDataYears.value,
 })
 </script>
