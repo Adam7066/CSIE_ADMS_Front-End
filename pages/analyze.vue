@@ -40,10 +40,10 @@ definePageMeta({
   layout: 'aside',
 })
 
+const { width: windowWidth } = useWindowSize()
 const memoCollapsed = ref(false)
 const collapsed = computed(() => {
-  const { width } = useWindowSize()
-  return width.value < 1024 ? true : memoCollapsed.value
+  return windowWidth.value < 1024 ? true : memoCollapsed.value
 })
 const collapsedIconName = computed(() => (collapsed.value ? 'chevron-right' : 'chevron-left'))
 const changeCollapsed = () => {

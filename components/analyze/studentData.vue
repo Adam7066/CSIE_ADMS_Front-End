@@ -19,20 +19,27 @@
           />
         </div>
 
-        <div class="ml-8 self-start">
-          <t-button theme="success" variant="outline">取得所選學生「成績排名」資料</t-button>
+        <div class="h-[400px] w-full rounded-xl border-2 bg-green-50 p-4">
+          <VChart :option="option" :autoresize="true" />
         </div>
-        <div class="h-96 w-full rounded-xl border-2 bg-green-50 p-4"></div>
       </div>
     </div>
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
+import VChart, { INIT_OPTIONS_KEY, UPDATE_OPTIONS_KEY } from 'vue-echarts'
 import { useAuthStore } from '@/stores/auth'
+import { remixUrl } from '@/composables/useFetch'
 
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
+provide(INIT_OPTIONS_KEY, { locale: 'EN' })
+provide(UPDATE_OPTIONS_KEY, { notMerge: true })
+
+onMounted(() => {
+  getStudentYears()
+})
 
 interface StudentYears {
   error: string
@@ -56,7 +63,6 @@ const getStudentYears = async () => {
     })
   }
 }
-getStudentYears()
 
 interface YearOptions {
   label: string
@@ -69,7 +75,7 @@ const yearOptions = ref<YearOptions[]>([])
 const columns = ref([
   {
     colKey: 'row-select',
-    type: 'single',
+    type: 'multiple',
     checkProps: { allowUncheck: true },
   },
   { title: '入學年度', colKey: 'admission_year' },
@@ -97,12 +103,23 @@ interface StuRes {
   data: StuData[]
 }
 
+interface RankData {
+  semester: Record<string, number>
+  years: Record<string, number>
+}
+
+interface RankRes {
+  error: string
+  data: RankData[]
+}
+
 const getStuDataPending = ref(false)
 const stuData = ref<StuData[]>([])
+const rankData = ref<RankData[]>([])
 
 const getStuData = async () => {
   getStuDataPending.value = true
-  const { data } = await useFetch<StuRes>(config.public.apiBase + '/students', {
+  const { data: getStuData } = await useFetch<StuRes>(config.public.apiBase + '/students', {
     method: 'GET',
     headers: {
       Authorization: 'Bearer ' + authStore.token,
@@ -111,14 +128,35 @@ const getStuData = async () => {
       year: yearValue.value,
     },
   })
-  getStuDataPending.value = false
-  if (data.value) {
-    if (data.value.error) {
-      alert(data.value.error)
+  if (getStuData.value) {
+    if (getStuData.value.error) {
+      alert(getStuData.value.error)
       return
     }
-    stuData.value = data.value.data
+    stuData.value = getStuData.value.data
   }
+
+  const { data: getRankData } = await useFetch<RankRes>(
+    remixUrl(
+      config.public.apiBase + '/ranks',
+      'stu_ids',
+      stuData.value.map((item) => item.id),
+    ),
+    {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + authStore.token,
+      },
+    },
+  )
+  if (getRankData.value) {
+    if (getRankData.value.error) {
+      alert(getRankData.value.error)
+      return
+    }
+    rankData.value = getRankData.value.data
+  }
+  getStuDataPending.value = false
 }
 
 const selectedRowKeys = ref<number[]>([])
@@ -127,6 +165,63 @@ const rehandleSelectChange = (
   { selectedRowData }: { selectedRowData: StuData[] },
 ) => {
   selectedRowKeys.value = value
-  console.log(selectedRowData)
+  legendData.value = selectedRowData.map((item) => item.student_code)
+  xAxisData.value = Array.from(
+    new Set(rankData.value.flatMap((item) => Object.keys(item.semester))),
+  ).sort()
+  seriesData.value = []
+  for (let i = 0; i < selectedRowKeys.value.length; i++) {
+    const idx = stuData.value.findIndex((item) => item.id === selectedRowKeys.value[i])
+    const tmpData: number[] = []
+    for (let j = 0; j < xAxisData.value.length; j++) {
+      tmpData.push(rankData.value[idx].semester[xAxisData.value[j]])
+    }
+    seriesData.value.push({
+      name: legendData.value[i],
+      type: 'line',
+      data: tmpData,
+    })
+  }
+
+  option.value.legend.data = legendData.value
+  option.value.xAxis.data = xAxisData.value
+  option.value.series = seriesData.value
 }
+
+interface SeriesData {
+  name: string
+  type: string
+  data: number[]
+}
+const seriesData = ref<SeriesData[]>([])
+const legendData = ref<string[]>([])
+const xAxisData = ref<string[]>([])
+
+const option = ref({
+  title: {
+    text: '各學期成績排名',
+  },
+  tooltip: {
+    trigger: 'axis',
+    order: 'valueAsc',
+  },
+  legend: {
+    data: legendData.value,
+  },
+  toolbox: {
+    feature: {
+      saveAsImage: {},
+    },
+  },
+  xAxis: {
+    type: 'category',
+    data: xAxisData.value,
+  },
+  yAxis: {
+    type: 'value',
+    inverse: true,
+    min: 1,
+  },
+  series: seriesData.value,
+})
 </script>
