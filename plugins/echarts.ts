@@ -1,7 +1,7 @@
 import { use, registerMap } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
-import { MapChart, LineChart, BarChart, BoxplotChart } from 'echarts/charts'
+import { MapChart, LineChart, BarChart, BoxplotChart, RadarChart } from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
@@ -21,6 +21,7 @@ export default defineNuxtPlugin(() => {
     LabelLayout,
     MapChart,
     LineChart,
+    RadarChart,
     UniversalTransition,
     GridComponent,
     TitleComponent,

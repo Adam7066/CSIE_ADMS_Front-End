@@ -3,27 +3,49 @@
     <ClientOnly>
       <div class="bg-blue-50 px-8 py-12">
         <div class="flex flex-col items-center justify-center">
-          <div class="flex w-full flex-row justify-between bg-yellow-50">
-            <div class="m-2 bg-white">
-              <t-select
-                v-model="SiJiSelected"
-                :options="SiJi"
-                placeholder="系級"
-                multiple
-              ></t-select>
+          <!-- <div
+            v-if="stuData.length !== 0"
+            class="grid w-full grid-cols-3 gap-4 rounded border-2 border-gray-300 bg-white p-4"
+          >
+            <div class="grid grid-cols-4">
+              <div class="col-span-4">整體數據 ( {{ stuData.length }} 項資料 )</div>
+              <div class="col-span-1 col-start-2">平均</div>
+              <div class="col-span-1">眾數</div>
+              <div class="col-span-1">中位數</div>
+              <div class="col-span-1">國文</div>
+              <div class="col-span-1">{{ countStatics('chi', 'mean', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('chi', 'mode', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('chi', 'median', 'all') }}</div>
+              <div class="col-span-1">英文</div>
+              <div class="col-span-1">{{ countStatics('eng', 'mean', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('eng', 'mode', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('eng', 'median', 'all') }}</div>
+              <div class="col-span-1">數學</div>
+              <div class="col-span-1">{{ countStatics('math', 'mean', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('math', 'mode', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('math', 'median', 'all') }}</div>
+              <div class="col-span-1">自然</div>
+              <div class="col-span-1">{{ countStatics('nat', 'mean', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('nat', 'mode', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('nat', 'median', 'all') }}</div>
+              <div class="col-span-1">社會</div>
+              <div class="col-span-1">{{ countStatics('soc', 'mean', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('soc', 'mode', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('soc', 'median', 'all') }}</div>
+              <div class="col-span-1">總級分</div>
+              <div class="col-span-1">{{ countStatics('sum', 'mean', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('sum', 'mode', 'all') }}</div>
+              <div class="col-span-1">{{ countStatics('sum', 'median', 'all') }}</div>
             </div>
-            <div class="m-2 bg-white">
-              <t-button variant="text" @click="fetchStuData">查詢</t-button>
+          </div> -->
+          <!-- <div class="w-full rounded border-2 border-gray-300 bg-white">
+            <t-button variant="text" @click="showingChart.groupBar = !showingChart.groupBar">
+              入學組別柱狀圖</t-button
+            >
+            <div>
+              <VChart :option="groupBarOption" class="h-full w-full" />
             </div>
-            <div class="m-2 bg-white">
-              <t-button variant="text" @click="isMagInputExpand = !isMagInputExpand">
-                篩選倍率調整
-                <template #icon>
-                  <chevron-down-icon />
-                </template>
-              </t-button>
-            </div>
-          </div>
+          </div> -->
           <div
             v-if="isMagInputExpand"
             class="my-2 grid grid-cols-5 gap-x-2 gap-y-1 self-end rounded border-2 border-gray-300 px-4 py-2"
@@ -39,26 +61,120 @@
             <t-input-number v-model="magnification.nat" theme="column"></t-input-number>
             <t-input-number v-model="magnification.soc" theme="column"></t-input-number>
           </div>
-          <div class="flex flex-row content-start justify-between bg-green-50">
-            <div
-              class="m-2 min-h-[768px] w-full rounded-md border-2 border-gray-300 bg-pink-50 p-4"
-            >
-              <t-table
-                :columns="colSmall"
-                :data="stuData"
-                :sort="sort"
-                row-key="id"
-                :selected-row-keys="selectedRowKeys"
-                :active-row-type="activeRow ? 'single' : undefined"
-                @sort-change="sortChange"
-                @select-change="rehandleSelectChange"
-              >
-              </t-table>
+          <div class="m-2 min-h-[768px] w-full rounded-md border-2 border-gray-300 bg-gray-100">
+            <div class="flex w-full flex-row justify-between">
+              <div class="m-2 bg-white">
+                <t-select
+                  v-model="SiJiSelected"
+                  :options="SiJi"
+                  placeholder="系級"
+                  multiple
+                ></t-select>
+              </div>
+              <div class="m-2 bg-white">
+                <t-button variant="text" @click="fetchStuData">查詢</t-button>
+              </div>
+              <div class="m-2 bg-white">
+                <t-button variant="text" @click="isMagInputExpand = !isMagInputExpand">
+                  篩選倍率調整
+                  <template #icon>
+                    <chevron-down-icon />
+                  </template>
+                </t-button>
+              </div>
             </div>
+            <t-table
+              :columns="colSmall"
+              :data="stuData"
+              :sort="sort"
+              row-key="student_code"
+              :selected-row-keys="selectedRowKeys"
+              :active-row-type="activeRow ? 'single' : undefined"
+              :max-height="712"
+              @sort-change="sortChange"
+              @select-change="rehandleSelectChange"
+            >
+            </t-table>
           </div>
-          <div class="w-full rounded border-2 border-gray-300 bg-white">
-            <div>整體平均</div>
-            <div></div>
+          <!-- <div class="h-[25rem] w-full m-4 border">
+            <VChart :option="option" class="h-full w-full" />
+          </div> -->
+          <div class="min-h-[768px] w-full rounded-md border-2 border-gray-300 bg-white">
+            <t-tabs v-model="currentTab" theme="card">
+              <t-tab-panel :value="1" label="成績表格" :destroy-on-hide="false" :lazy="true">
+                <div v-if="stuData.length !== 0" class="grid w-full grid-cols-3 gap-4 bg-white p-4">
+                  <div class="grid grid-cols-4">
+                    <div class="col-span-4">整體數據 ( {{ stuData.length }} 項資料 )</div>
+                    <div class="col-span-1 col-start-2">平均</div>
+                    <div class="col-span-1">眾數</div>
+                    <div class="col-span-1">中位數</div>
+                    <div class="col-span-1">國文</div>
+                    <div class="col-span-1">{{ countStatics('chi', 'mean', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('chi', 'mode', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('chi', 'median', 'all') }}</div>
+                    <div class="col-span-1">英文</div>
+                    <div class="col-span-1">{{ countStatics('eng', 'mean', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('eng', 'mode', 'all') }}</div>
+                    <div class="col-spn-1">{{ countStatics('eng', 'median', 'all') }}</div>
+                    <div class="col-span-1">數學</div>
+                    <div class="col-span-1">{{ countStatics('math', 'mean', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('math', 'mode', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('math', 'median', 'all') }}</div>
+                    <div class="col-span-1">自然</div>
+                    <div class="col-span-1">{{ countStatics('nat', 'mean', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('nat', 'mode', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('nat', 'median', 'all') }}</div>
+                    <div class="col-span-1">社會</div>
+                    <div class="col-span-1">{{ countStatics('soc', 'mean', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('soc', 'mode', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('soc', 'median', 'all') }}</div>
+                    <div class="col-span-1">總級分</div>
+                    <div class="col-span-1">{{ countStatics('sum', 'mean', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('sum', 'mode', 'all') }}</div>
+                    <div class="col-span-1">{{ countStatics('sum', 'median', 'all') }}</div>
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="flex flex-col items-start justify-center">
+                    <div class="m-2 text-xl">請選擇入學年度</div>
+                  </div>
+                </div>
+              </t-tab-panel>
+              <t-tab-panel :value="2" label="成績雷達圖" :destroy-on-hide="true" :lazy="true">
+                <div v-if="stuData.length === 0">
+                  <div class="flex flex-col items-start justify-center">
+                    <div class="m-2 text-xl">請選擇入學年度</div>
+                  </div>
+                </div>
+                <div v-else class="flex h-screen w-full flex-col items-center justify-center">
+                  <div class="h-[90%] w-[90%]">
+                    <VChart :option="option" class="h-full w-full" />
+                  </div>
+                </div>
+              </t-tab-panel>
+              <t-tab-panel
+                :value="3"
+                label="選中學生成績雷達圖"
+                :destroy-on-hide="true"
+                :lazy="true"
+              >
+                <div v-if="stuData.length === 0">
+                  <div class="flex flex-col items-start justify-center">
+                    <div class="m-2 text-xl">請選擇入學年度</div>
+                  </div>
+                </div>
+                <div v-else-if="stuSelected.length === 0">
+                  <div class="flex flex-col items-start justify-center">
+                    <div class="m-2 text-xl">請選擇學生資料</div>
+                  </div>
+                </div>
+                <div v-else class="flex h-screen w-full flex-col items-center justify-center">
+                  <div class="h-[90%] w-[90%]">
+                    <VChart :option="option" class="h-full w-full" />
+                  </div>
+                </div>
+              </t-tab-panel>
+            </t-tabs>
           </div>
         </div>
       </div>
@@ -68,7 +184,18 @@
 
 <script setup lang="ts">
 import { ChevronDownIcon } from 'tdesign-icons-vue-next'
+import VChart from 'vue-echarts'
 import { useAuthStore } from '@/stores/auth'
+
+// const defaultToolbox = {
+//   show: true,
+//   left: 'right',
+//   top: 'top',
+//   feature: {
+//     saveAsImage: {},
+//   },
+// }
+const currentTab = ref(1)
 
 const sort = ref({
   sortBy: '',
@@ -106,11 +233,12 @@ const magnification = ref({
 })
 
 interface studentData {
-  id: number
   admission_year: number
   student_code: string
   name: string
   graduated_school: string
+  admission_group: string
+  identity_category: string
   chinese: number
   english: number
   math: number
@@ -145,36 +273,6 @@ const colSmall = ref([
 const SiJi = ref<{ content: string; value: number }[]>([])
 
 const stuRawData = ref<studentData[]>([])
-// const stuRawData = ref<studentData[]>([
-//   {
-//     id: 1,
-//     admission_year: 113,
-//     student_code: '40947043S',
-//     name: '徐政皓',
-//     graduated_school: '國立新竹高中',
-//     chinese: 13,
-//     english: 13,
-//     math: 13,
-//     nature: 13,
-//     society: 13,
-//     listening: 'A',
-//     sum_score: 65,
-//   },
-//   {
-//     id: 2,
-//     admission_year: 113,
-//     student_code: '40947026S',
-//     name: '余原齊',
-//     graduated_school: '某所私立高中',
-//     chinese: 12,
-//     english: 13,
-//     math: 15,
-//     nature: 15,
-//     society: 14,
-//     listening: 'A',
-//     sum_score: 69,
-//   },
-// ])
 
 const stuData = computed(() => {
   const res = ref<studentData[]>([])
@@ -201,8 +299,12 @@ const rehandleSelectChange = (selectRows: []) => {
   selectedRowKeys.value = selectRows
 
   stuSelected.value = []
-  selectedRowKeys.value.forEach((item: number) => {
-    stuSelected.value.push(stuData.value[item])
+  selectedRowKeys.value.forEach((item) => {
+    stuData.value.forEach((item2) => {
+      if (item === item2.student_code) {
+        stuSelected.value.push(item2)
+      }
+    })
   })
 }
 
@@ -255,7 +357,184 @@ const fetchStuData = async () => {
   }
 }
 
+const mean = (arr: number[]) => {
+  let sum = 0
+  arr.forEach((item) => {
+    sum += item
+  })
+  return Math.round((sum / arr.length) * 100) / 100
+}
+
+const mode = (arr: number[]) => {
+  const frequencyMap: Record<number, number> = {}
+  let maxFrequency = 0
+  let modeValue: number | null = null
+
+  arr.forEach((num) => {
+    frequencyMap[num] = (frequencyMap[num] || 0) + 1
+
+    if (frequencyMap[num] > maxFrequency) {
+      maxFrequency = frequencyMap[num]
+      modeValue = num
+    }
+  })
+
+  return modeValue
+}
+
+const median = (arr: number[]) => {
+  arr.sort((a, b) => a - b)
+  const mid = Math.floor(arr.length / 2)
+  return arr.length % 2 !== 0 ? arr[mid] : (arr[mid - 1] + arr[mid]) / 2
+}
+
+const countStatics = (subject: string, counting: string, g: string) => {
+  if (g === 'all') {
+    const arr: number[] = []
+    stuData.value.forEach((item) => {
+      if (subject === 'chi') {
+        arr.push(item.chinese)
+      } else if (subject === 'eng') {
+        arr.push(item.english)
+      } else if (subject === 'math') {
+        arr.push(item.math)
+      } else if (subject === 'nat') {
+        arr.push(item.nature)
+      } else if (subject === 'soc') {
+        arr.push(item.society)
+      } else if (subject === 'sum') {
+        arr.push(item.sum_score)
+      }
+    })
+    if (counting === 'mean') {
+      return mean(arr) as number
+    } else if (counting === 'mode') {
+      return mode(arr) as number | null
+    } else if (counting === 'median') {
+      return median(arr) as number
+    }
+  }
+}
+
 onMounted(() => {
   fetchApplyYears()
+})
+
+const option = ref({})
+
+const updateChartOption = () => {
+  if (currentTab.value === 2) {
+    if (stuData.value.length === 0) {
+      return
+    }
+
+    const newOption = {
+      title: {
+        text: '成績雷達圖',
+      },
+      legend: {
+        data: computed(() => {
+          const legendData = [] as string[]
+          SiJi.value.forEach((item) => {
+            legendData.push(item.value.toString())
+          })
+          return legendData
+        }),
+      },
+      radar: {
+        indicator: [
+          { name: '國文', max: 15 * magnification.value.chi },
+          { name: '英文', max: 15 * magnification.value.eng },
+          { name: '數學', max: 15 * magnification.value.math },
+          { name: '自然', max: 15 * magnification.value.nat },
+          { name: '社會', max: 15 * magnification.value.soc },
+        ],
+      },
+      series: [
+        {
+          type: 'radar',
+          data: computed(() => {
+            const seriesData = [] as { value: number[]; name: string }[]
+            SiJi.value.forEach((item) => {
+              const ins = {} as { value: number[]; name: string }
+              ins.name = item.value.toString()
+              ins.value = [
+                countStatics('chi', 'mean', 'all') as number,
+                countStatics('eng', 'mean', 'all') as number,
+                countStatics('math', 'mean', 'all') as number,
+                countStatics('nat', 'mean', 'all') as number,
+                countStatics('soc', 'mean', 'all') as number,
+              ]
+              seriesData.push(ins)
+            })
+            return seriesData
+          }),
+        },
+      ],
+    }
+
+    option.value = newOption
+  } else if (currentTab.value === 3) {
+    if (stuSelected.value.length === 0) {
+      return
+    }
+
+    const newOption = {
+      title: {
+        text: '選中學生學測成績雷達圖',
+      },
+      legend: {
+        data: computed(() => {
+          const legendData = [] as string[]
+          stuSelected.value.forEach((item) => {
+            legendData.push(item.name)
+          })
+          return legendData
+        }),
+      },
+      radar: {
+        indicator: [
+          { name: '國文', max: 15 * magnification.value.chi },
+          { name: '英文', max: 15 * magnification.value.eng },
+          { name: '數學', max: 15 * magnification.value.math },
+          { name: '自然', max: 15 * magnification.value.nat },
+          { name: '社會', max: 15 * magnification.value.soc },
+        ],
+      },
+      series: [
+        {
+          type: 'radar',
+          data: computed(() => {
+            const seriesData = [] as { value: number[]; name: string }[]
+            stuSelected.value.forEach((item) => {
+              const ins = {} as { value: number[]; name: string }
+              ins.name = item.name
+              ins.value = [item.chinese, item.english, item.math, item.nature, item.society]
+              seriesData.push(ins)
+            })
+            return seriesData
+          }),
+        },
+      ],
+    }
+
+    option.value = newOption
+  }
+}
+
+watch(stuData, () => {
+  updateChartOption()
+})
+
+watch(stuSelected, () => {
+  updateChartOption()
+})
+
+watch(currentTab, () => {
+  updateChartOption()
+})
+
+onUpdated(() => {
+  updateChartOption()
 })
 </script>
