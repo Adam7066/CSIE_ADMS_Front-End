@@ -35,6 +35,7 @@ import AnalyzeDefault from '@/components/analyze/default.vue'
 import AnalyzeStudentData from '@/components/analyze/studentData.vue'
 import AnalyzeGroup from '@/components/analyze/group.vue'
 import AnalyzeAdmissionStuData from '@/components/analyze/admissionStuData.vue'
+import AnalyzeStarStuData from '@/components/analyze/starStuData.vue'
 
 definePageMeta({
   layout: 'aside',
@@ -56,6 +57,7 @@ const anaList = [
   { feat: '學生資料', value: 1, comp: AnalyzeStudentData, icon: 'circle' },
   { feat: '入學組別', value: 2, comp: AnalyzeGroup, icon: 'circle' },
   { feat: '個人申請', value: 3, comp: AnalyzeAdmissionStuData, icon: 'circle' },
+  { feat: '繁星入學', value: 4, comp: AnalyzeStarStuData, icon: 'circle' },
   // { feat: '排名分佈', value: 2 },
   // { feat: '趨勢分析', value: 3 },
   // { feat: '大專院校排名', value: 4 },

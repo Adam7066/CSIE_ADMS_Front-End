@@ -6,7 +6,7 @@
           <t-select v-model="yearValue" label="系級：" :options="yearOptions" />
           <t-button @click="getStuData">取得資料</t-button>
         </div>
-        <div class="w-full rounded-xl border-2 bg-pink-50 p-4">
+        <div class="w-full rounded-xl border-2 bg-white p-4">
           <t-table
             row-key="id"
             :columns="columns"
@@ -21,10 +21,10 @@
 
         <div
           v-if="seriesDataSemester.length + seriesDataYears.length > 0"
-          class="h-[800px] w-full rounded-xl border-2 bg-green-50 p-4"
+          class="h-[800px] w-full rounded-xl border-2 bg-white p-4"
         >
           <VChart :option="optionSemester" :autoresize="true" class="h-1/2" />
-          <VChart :option="optionYears" :autoresize="true" class="h-1/2" />
+          <!-- <VChart :option="optionYears" :autoresize="true" class="h-1/2" /> -->
         </div>
       </div>
     </div>

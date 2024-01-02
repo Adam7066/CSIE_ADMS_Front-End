@@ -3,49 +3,6 @@
     <ClientOnly>
       <div class="bg-blue-50 px-8 py-12">
         <div class="flex flex-col items-center justify-center">
-          <!-- <div
-            v-if="stuData.length !== 0"
-            class="grid w-full grid-cols-3 gap-4 rounded border-2 border-gray-300 bg-white p-4"
-          >
-            <div class="grid grid-cols-4">
-              <div class="col-span-4">整體數據 ( {{ stuData.length }} 項資料 )</div>
-              <div class="col-span-1 col-start-2">平均</div>
-              <div class="col-span-1">眾數</div>
-              <div class="col-span-1">中位數</div>
-              <div class="col-span-1">國文</div>
-              <div class="col-span-1">{{ countStatics('chi', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('chi', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('chi', 'median', 'all') }}</div>
-              <div class="col-span-1">英文</div>
-              <div class="col-span-1">{{ countStatics('eng', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('eng', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('eng', 'median', 'all') }}</div>
-              <div class="col-span-1">數學</div>
-              <div class="col-span-1">{{ countStatics('math', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('math', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('math', 'median', 'all') }}</div>
-              <div class="col-span-1">自然</div>
-              <div class="col-span-1">{{ countStatics('nat', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('nat', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('nat', 'median', 'all') }}</div>
-              <div class="col-span-1">社會</div>
-              <div class="col-span-1">{{ countStatics('soc', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('soc', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('soc', 'median', 'all') }}</div>
-              <div class="col-span-1">總級分</div>
-              <div class="col-span-1">{{ countStatics('sum', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('sum', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('sum', 'median', 'all') }}</div>
-            </div>
-          </div> -->
-          <!-- <div class="w-full rounded border-2 border-gray-300 bg-white">
-            <t-button variant="text" @click="showingChart.groupBar = !showingChart.groupBar">
-              入學組別柱狀圖</t-button
-            >
-            <div>
-              <VChart :option="groupBarOption" class="h-full w-full" />
-            </div>
-          </div> -->
           <div
             v-if="isMagInputExpand"
             class="my-2 grid grid-cols-5 gap-x-2 gap-y-1 self-end rounded border-2 border-gray-300 px-4 py-2"
@@ -315,20 +272,23 @@ interface ApplyYears {
 
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
-const fetchApplyYears = async () => {
-  const { data } = await useFetch<ApplyYears>(config.public.apiBase + '/adms_info/years/apply', {
-    method: 'GET',
-    headers: {
-      Authorization: 'Bearer ' + authStore.token,
+const fetchStarYears = async () => {
+  const { data } = await useFetch<ApplyYears>(
+    config.public.apiBase + '/adms_info/years/star_plan',
+    {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + authStore.token,
+      },
     },
-  })
+  )
   if (data.value) {
     if (data.value.error) {
       alert(data.value.error)
       return
     }
     data.value.data.forEach((item) => {
-      SiJi.value.push({ content: (item + 4).toString() + '級', value: item + 4 })
+      SiJi.value.push({ content: item.toString(), value: item })
     })
   }
 }
@@ -339,15 +299,18 @@ interface StuData {
 }
 
 const fetchStuData = async () => {
-  const { data } = await useFetch<StuData>(config.public.apiBase + '/adms_info/students/apply', {
-    method: 'POST',
-    headers: {
-      Authorization: 'Bearer ' + authStore.token,
+  const { data } = await useFetch<StuData>(
+    config.public.apiBase + '/adms_info/students/star_plan',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + authStore.token,
+      },
+      body: {
+        years: SiJiSelected.value,
+      },
     },
-    body: {
-      years: SiJiSelected.value,
-    },
-  })
+  )
   if (data.value) {
     if (data.value.error) {
       alert(data.value.error)
@@ -417,7 +380,7 @@ const countStatics = (subject: string, counting: string, g: string) => {
 }
 
 onMounted(() => {
-  fetchApplyYears()
+  fetchStarYears()
 })
 
 const option = ref({})
