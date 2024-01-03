@@ -3,49 +3,6 @@
     <ClientOnly>
       <div class="bg-blue-50 px-8 py-12">
         <div class="flex flex-col items-center justify-center">
-          <!-- <div
-            v-if="stuData.length !== 0"
-            class="grid w-full grid-cols-3 gap-4 rounded border-2 border-gray-300 bg-white p-4"
-          >
-            <div class="grid grid-cols-4">
-              <div class="col-span-4">整體數據 ( {{ stuData.length }} 項資料 )</div>
-              <div class="col-span-1 col-start-2">平均</div>
-              <div class="col-span-1">眾數</div>
-              <div class="col-span-1">中位數</div>
-              <div class="col-span-1">國文</div>
-              <div class="col-span-1">{{ countStatics('chi', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('chi', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('chi', 'median', 'all') }}</div>
-              <div class="col-span-1">英文</div>
-              <div class="col-span-1">{{ countStatics('eng', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('eng', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('eng', 'median', 'all') }}</div>
-              <div class="col-span-1">數學</div>
-              <div class="col-span-1">{{ countStatics('math', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('math', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('math', 'median', 'all') }}</div>
-              <div class="col-span-1">自然</div>
-              <div class="col-span-1">{{ countStatics('nat', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('nat', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('nat', 'median', 'all') }}</div>
-              <div class="col-span-1">社會</div>
-              <div class="col-span-1">{{ countStatics('soc', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('soc', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('soc', 'median', 'all') }}</div>
-              <div class="col-span-1">總級分</div>
-              <div class="col-span-1">{{ countStatics('sum', 'mean', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('sum', 'mode', 'all') }}</div>
-              <div class="col-span-1">{{ countStatics('sum', 'median', 'all') }}</div>
-            </div>
-          </div> -->
-          <!-- <div class="w-full rounded border-2 border-gray-300 bg-white">
-            <t-button variant="text" @click="showingChart.groupBar = !showingChart.groupBar">
-              入學組別柱狀圖</t-button
-            >
-            <div>
-              <VChart :option="groupBarOption" class="h-full w-full" />
-            </div>
-          </div> -->
           <div
             v-if="isMagInputExpand"
             class="my-2 grid grid-cols-5 gap-x-2 gap-y-1 self-end rounded border-2 border-gray-300 px-4 py-2"
@@ -61,15 +18,10 @@
             <t-input-number v-model="magnification.nat" theme="column"></t-input-number>
             <t-input-number v-model="magnification.soc" theme="column"></t-input-number>
           </div>
-          <div class="m-2 min-h-[768px] w-full rounded-md border-2 border-gray-300 bg-gray-100">
+          <div class="m-2 min-h-[400px] w-full rounded-md border-2 border-gray-300 bg-gray-100">
             <div class="flex w-full flex-row justify-between">
               <div class="m-2 bg-white">
-                <t-select
-                  v-model="SiJiSelected"
-                  :options="SiJi"
-                  placeholder="系級"
-                  multiple
-                ></t-select>
+                <t-select v-model="SiJiSelected" :options="SiJi" label="系級：" :multiple="true" />
               </div>
               <div class="m-2 bg-white">
                 <t-button variant="text" @click="fetchStuData">查詢</t-button>
@@ -90,16 +42,13 @@
               row-key="student_code"
               :selected-row-keys="selectedRowKeys"
               :active-row-type="activeRow ? 'single' : undefined"
-              :max-height="712"
+              :max-height="400"
               @sort-change="sortChange"
               @select-change="rehandleSelectChange"
             >
             </t-table>
           </div>
-          <!-- <div class="h-[25rem] w-full m-4 border">
-            <VChart :option="option" class="h-full w-full" />
-          </div> -->
-          <div class="min-h-[768px] w-full rounded-md border-2 border-gray-300 bg-white">
+          <div class="min-h-[600px] w-full rounded-md border-2 border-gray-300 bg-white">
             <t-tabs v-model="currentTab" theme="card">
               <t-tab-panel :value="1" label="成績表格" :destroy-on-hide="false" :lazy="true">
                 <div v-if="stuData.length !== 0" class="grid w-full grid-cols-3 gap-4 bg-white p-4">
@@ -146,10 +95,8 @@
                     <div class="m-2 text-xl">請選擇入學年度</div>
                   </div>
                 </div>
-                <div v-else class="flex h-screen w-full flex-col items-center justify-center">
-                  <div class="h-[90%] w-[90%]">
-                    <VChart :option="option" class="h-full w-full" />
-                  </div>
+                <div class="h-[552px] p-4">
+                  <VChart :option="option" :autoresize="true" />
                 </div>
               </t-tab-panel>
               <t-tab-panel
@@ -168,10 +115,8 @@
                     <div class="m-2 text-xl">請選擇學生資料</div>
                   </div>
                 </div>
-                <div v-else class="flex h-screen w-full flex-col items-center justify-center">
-                  <div class="h-[90%] w-[90%]">
-                    <VChart :option="option" class="h-full w-full" />
-                  </div>
+                <div class="h-[552px] p-4">
+                  <VChart :option="option" :autoresize="true" />
                 </div>
               </t-tab-panel>
             </t-tabs>
@@ -187,14 +132,6 @@ import { ChevronDownIcon } from 'tdesign-icons-vue-next'
 import VChart from 'vue-echarts'
 import { useAuthStore } from '@/stores/auth'
 
-// const defaultToolbox = {
-//   show: true,
-//   left: 'right',
-//   top: 'top',
-//   feature: {
-//     saveAsImage: {},
-//   },
-// }
 const currentTab = ref(1)
 
 const sort = ref({
@@ -270,7 +207,7 @@ const colSmall = ref([
   { title: '總級分', colKey: 'sum_score', sortType: 'all', sorter: true },
 ])
 
-const SiJi = ref<{ content: string; value: number }[]>([])
+const SiJi = ref<{ label: string; value: number }[]>([])
 
 const stuRawData = ref<studentData[]>([])
 
@@ -328,7 +265,7 @@ const fetchApplyYears = async () => {
       return
     }
     data.value.data.forEach((item) => {
-      SiJi.value.push({ content: (item + 4).toString() + '級', value: item + 4 })
+      SiJi.value.push({ label: (item + 4).toString() + '級', value: item })
     })
   }
 }
@@ -439,7 +376,7 @@ const updateChartOption = () => {
         data: computed(() => {
           const legendData = [] as string[]
           SiJi.value.forEach((item) => {
-            legendData.push(item.value.toString())
+            legendData.push(item.label.toString())
           })
           return legendData
         }),
@@ -460,7 +397,7 @@ const updateChartOption = () => {
             const seriesData = [] as { value: number[]; name: string }[]
             SiJi.value.forEach((item) => {
               const ins = {} as { value: number[]; name: string }
-              ins.name = item.value.toString()
+              ins.name = item.label.toString()
               ins.value = [
                 countStatics('chi', 'mean', 'all') as number,
                 countStatics('eng', 'mean', 'all') as number,
