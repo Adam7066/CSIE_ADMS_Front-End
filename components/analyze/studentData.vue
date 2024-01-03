@@ -218,15 +218,15 @@ const updateScatterOption = () => {
   for (let i = 0; i < stuData.value.length; i++) {
     if (rankData.value[i].semester[year1]) {
       year1Data.push([
-        methods.value.findIndex((item) => item === stuData.value[i].admission_method),
         rankData.value[i].semester[year1],
+        methods.value.findIndex((item) => item === stuData.value[i].admission_method),
         i,
       ])
     }
     if (rankData.value[i].semester[year2]) {
       year2Data.push([
-        methods.value.findIndex((item) => item === stuData.value[i].admission_method),
         rankData.value[i].semester[year2],
+        methods.value.findIndex((item) => item === stuData.value[i].admission_method),
         i,
       ])
     }
@@ -245,7 +245,7 @@ const updateScatterOption = () => {
   legendDataScatter.value = [year1, year2]
   optionGroupScatter.value.legend.data = legendDataScatter.value
   optionGroupScatter.value.series = seriesScatterDataSemester.value
-  optionGroupScatter.value.xAxis.data = methods.value
+  optionGroupScatter.value.yAxis.data = methods.value
 }
 
 const onSiJiButtonClick = async () => {
@@ -399,11 +399,11 @@ const optionGroupScatter = ref({
     right: 10,
     containLabel: true,
   },
-  xAxis: {
+  yAxis: {
     type: 'category',
     data: methods.value,
   },
-  yAxis: {
+  xAxis: {
     type: 'value',
     inverse: true,
     min: 1,
