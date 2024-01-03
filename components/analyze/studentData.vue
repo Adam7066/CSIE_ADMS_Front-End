@@ -74,19 +74,13 @@
                 <div class="mb-4 ml-2 mt-2 w-1/2">
                   <t-button
                     :variant="semesterSwitch ? 'base' : 'text'"
-                    @click="
-                      semesterSwitch = true
-                      updateBarOption()
-                    "
+                    @click="updateBarOption(true)"
                   >
                     {{ yearValue }} 年度 第一學期
                   </t-button>
                   <t-button
                     :variant="!semesterSwitch ? 'base' : 'text'"
-                    @click="
-                      semesterSwitch = false
-                      updateBarOption()
-                    "
+                    @click="updateBarOption(false)"
                   >
                     {{ yearValue }} 年度 第二學期
                   </t-button>
@@ -283,7 +277,9 @@ const updateScatterOption = () => {
   optionGroupScatter.value.yAxis.data = methods.value
 }
 
-const updateBarOption = () => {
+const updateBarOption = (tmpSwitch: boolean) => {
+  semesterSwitch.value = tmpSwitch
+
   seriesGroupBarData.value = []
   const year1 = yearValue.value + '-1'
   const year2 = yearValue.value + '-2'
@@ -348,7 +344,7 @@ const updateBarOption = () => {
 const onSiJiButtonClick = async () => {
   await getStuData()
   updateScatterOption()
-  updateBarOption()
+  updateBarOption(true)
 }
 
 const selectedRowKeys = ref<number[]>([])
@@ -403,6 +399,7 @@ interface SeriesData {
   type: string
   data: number[]
 }
+
 const seriesDataSemester = ref<SeriesData[]>([])
 const legendData = ref<string[]>([])
 const xAxisDataSemester = ref<string[]>([])
