@@ -24,7 +24,7 @@
           class="h-[800px] w-full rounded-xl border-2 bg-white p-4"
         >
           <VChart :option="optionSemester" :autoresize="true" class="h-1/2" />
-          <!-- <VChart :option="optionYears" :autoresize="true" class="h-1/2" /> -->
+          <VChart :option="optionYears" :autoresize="true" class="h-1/2" />
         </div>
       </div>
     </div>
@@ -122,6 +122,8 @@ const stuData = ref<StuData[]>([])
 const rankData = ref<RankData[]>([])
 
 const getStuData = async () => {
+  selectedRowKeys.value = []
+
   getStuDataPending.value = true
   const { data: getStuData } = await useFetch<StuRes>(config.public.apiBase + '/students', {
     method: 'GET',
