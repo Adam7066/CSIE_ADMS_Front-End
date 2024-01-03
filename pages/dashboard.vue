@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full bg-blue-50">
+  <div class="h-[calc(100vh-56px)] w-full bg-blue-50">
     <ClientOnly>
       <div class="px-8 py-12">
         <div class="flex flex-col items-center justify-center gap-4">
