@@ -1,7 +1,14 @@
 import { use, registerMap } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
-import { MapChart, LineChart, BarChart, BoxplotChart, RadarChart } from 'echarts/charts'
+import {
+  MapChart,
+  LineChart,
+  BarChart,
+  BoxplotChart,
+  RadarChart,
+  ScatterChart,
+} from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
@@ -33,6 +40,7 @@ export default defineNuxtPlugin(() => {
     DatasetComponent,
     TransformComponent,
     BoxplotChart,
+    ScatterChart,
   ])
 
   registerMap('taiwan', taiwanJson as GeoJSON)
