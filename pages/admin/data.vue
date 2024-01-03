@@ -37,6 +37,21 @@
           placeholder="請上傳 .xlsx 檔"
         />
       </div>
+      <div>
+        <div class="text-lg font-medium">範例格式檔案下載區</div>
+        <t-space direction="vertical" class="ml-4 mt-2">
+          <t-link
+            v-for="(item, index) in sampleFormat"
+            :key="index"
+            :href="'/files/sample_format/' + item.filename"
+            theme="primary"
+            :underline="true"
+            download
+          >
+            {{ item.label }}
+          </t-link>
+        </t-space>
+      </div>
     </div>
 
     <t-divider />
@@ -166,6 +181,13 @@ const requestMethod = async (file: UploadFile) => {
 const handleUploadFail = (e: UploadFailContext) => {
   MessagePlugin.error(e.response.error)
 }
+
+const sampleFormat = [
+  { label: '申請入學_一般組', filename: 'apply_general.xlsx' },
+  { label: '申請入學_APCS組', filename: 'apply_apcs.xlsx' },
+  { label: '繁星推薦', filename: 'star_plan.xlsx' },
+  { label: '成績排名', filename: 'rank.xlsx' },
+]
 
 interface StudentYears {
   error: string
